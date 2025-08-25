@@ -14,12 +14,20 @@ import jakarta.persistence.Table;
 import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
-import lombok.Data;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
-@Data
+@Getter
+@Setter
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 @Entity
 @Table(name = "orders")
 public class Order {
@@ -38,15 +46,18 @@ public class Order {
     @JsonView({Views.UserDetails.class, Views.OrderSummary.class})
     private BigDecimal amount;
 
+    @Builder.Default
     @Enumerated(EnumType.STRING)
     @JsonView({Views.UserDetails.class, Views.OrderSummary.class})
-    private OrderStatus status;
+    private OrderStatus status = OrderStatus.PENDING;
 
+    @Builder.Default
     @JsonView({Views.UserDetails.class, Views.OrderSummary.class})
-    private LocalDateTime createdAt;
+    private LocalDateTime createdAt = LocalDateTime.now();
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     @JsonView(Views.OrderDetails.class)
     private User user;
+
 }
